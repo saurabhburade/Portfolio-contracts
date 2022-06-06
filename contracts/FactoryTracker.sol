@@ -175,7 +175,6 @@ interface IUniswapV2Factory {
 }
 
 contract FactoryTracker {
-    // mapping(string => uint256) myMapping;
 
     struct PairData {
         address token0;
@@ -206,7 +205,6 @@ contract FactoryTracker {
         string symbol;
         uint256 totalSupply;
         uint256 balance;
-        // mapping(uint256 => PairData[]) _lpsMap;
         PairData[] _lp0Data;
         PairData[] _lp1Data;
         PairData[] _lp2Data;
@@ -218,40 +216,30 @@ contract FactoryTracker {
         view
         returns (PairData memory)
     {
+        PairData memory newPairData;
         IUniswapV2Pair newPair = IUniswapV2Pair(_pairAddress);
-        address token0 = newPair.token0();
-        address token1 = newPair.token1();
+        newPairData.token0 = newPair.token0();
+        newPairData.token1 = newPair.token1();
 
         (uint112 reserve0, uint112 reserve1, uint256 _x) = newPair
             .getReserves();
         // uint112 reserve0 = newPair.getReserves();
         // uint256 reserve1 = newPair.getReserves()[1];
 
-        string memory name = newPair.name();
-        string memory symbol = newPair.symbol();
-        IERC20 _token0 = IERC20(token0);
-        IERC20 _token1 = IERC20(token1);
-        string memory token0Symbol = _token0.symbol();
-        string memory token1Symbol = _token1.symbol();
-        uint256 token0Decimals = _token0.decimals();
-        uint256 token1Decimals = _token1.decimals();
-        uint256 totalSupply = newPair.totalSupply();
-        uint256 balance = 0;
+        newPairData.name = newPair.name();
+        newPairData.symbol = newPair.symbol();
+        IERC20 _token0 = IERC20(newPairData.token0);
+        IERC20 _token1 = IERC20(newPairData.token1);
+        newPairData.token0Symbol = _token0.symbol();
+        newPairData.token1Symbol = _token1.symbol();
+        newPairData.token0Decimals = _token0.decimals();
+        newPairData.token1Decimals = _token1.decimals();
+        newPairData.totalSupply = newPair.totalSupply();
+        newPairData.balance = 0;
+        newPairData.reserve0 = reserve0;
+        newPairData.reserve1 = reserve1;
 
-        PairData memory newPairData = PairData(
-            token0,
-            token1,
-            reserve0,
-            reserve1,
-            name,
-            symbol,
-            token0Symbol,
-            token1Symbol,
-            token0Decimals,
-            token1Decimals,
-            totalSupply,
-            balance
-        );
+
         return newPairData;
     }
 
@@ -260,40 +248,28 @@ contract FactoryTracker {
         view
         returns (PairData memory)
     {
+        PairData memory newPairData;
+
         IUniswapV2Pair newPair = IUniswapV2Pair(_pairAddress);
-        address token0 = newPair.token0();
-        address token1 = newPair.token1();
+        newPairData.token0 = newPair.token0();
+        newPairData.token1 = newPair.token1();
 
         (uint112 reserve0, uint112 reserve1, uint256 _x) = newPair
             .getReserves();
-        // uint112 reserve0 = newPair.getReserves();
-        // uint256 reserve1 = newPair.getReserves()[1];
 
-        string memory name = newPair.name();
-        string memory symbol = newPair.symbol();
-        IERC20 _token0 = IERC20(token0);
-        IERC20 _token1 = IERC20(token1);
-        string memory token0Symbol = _token0.symbol();
-        string memory token1Symbol = _token1.symbol();
-        uint256 token0Decimals = _token0.decimals();
-        uint256 token1Decimals = _token1.decimals();
-        uint256 totalSupply = newPair.totalSupply();
-        uint256 balance = newPair.balanceOf(_account);
+        newPairData.name = newPair.name();
+        newPairData.symbol = newPair.symbol();
+        IERC20 _token0 = IERC20(newPairData.token0);
+        IERC20 _token1 = IERC20(newPairData.token1);
+        newPairData.token0Symbol = _token0.symbol();
+        newPairData.token1Symbol = _token1.symbol();
+        newPairData.token0Decimals = _token0.decimals();
+        newPairData.token1Decimals = _token1.decimals();
+        newPairData.totalSupply = newPair.totalSupply();
+        newPairData.balance = newPair.balanceOf(_account);
+        newPairData.reserve0 = reserve0;
+        newPairData.reserve1 = reserve1;
 
-        PairData memory newPairData = PairData(
-            token0,
-            token1,
-            reserve0,
-            reserve1,
-            name,
-            symbol,
-            token0Symbol,
-            token1Symbol,
-            token0Decimals,
-            token1Decimals,
-            totalSupply,
-            balance
-        );
         return newPairData;
     }
 
@@ -302,18 +278,13 @@ contract FactoryTracker {
         view
         returns (TokenData memory)
     {
+        TokenData memory newTokenData;
         IERC20 newToken = IERC20(_tokenAddress);
-        uint256 totalSupply = newToken.totalSupply();
-        uint256 balance = 0;
-        string memory name = newToken.name();
-        string memory symbol = newToken.symbol();
-        TokenData memory newTokenData = TokenData(
-            _tokenAddress,
-            name,
-            symbol,
-            totalSupply,
-            balance
-        );
+        newTokenData.totalSupply = newToken.totalSupply();
+        newTokenData.balance = 0;
+        newTokenData.name = newToken.name();
+        newTokenData.symbol = newToken.symbol();
+        newTokenData._tokenAddress = _tokenAddress;
 
         return newTokenData;
     }
@@ -323,18 +294,13 @@ contract FactoryTracker {
         view
         returns (TokenData memory)
     {
+        TokenData memory newTokenData;
         IERC20 newToken = IERC20(_tokenAddress);
-        uint256 totalSupply = newToken.totalSupply();
-        uint256 balance = newToken.balanceOf(_account);
-        string memory name = newToken.name();
-        string memory symbol = newToken.symbol();
-        TokenData memory newTokenData = TokenData(
-            _tokenAddress,
-            name,
-            symbol,
-            totalSupply,
-            balance
-        );
+        newTokenData.totalSupply = newToken.totalSupply();
+        newTokenData.balance = newToken.balanceOf(_account);
+        newTokenData.name = newToken.name();
+        newTokenData.symbol = newToken.symbol();
+        newTokenData._tokenAddress = _tokenAddress;
 
         return newTokenData;
     }
@@ -345,83 +311,41 @@ contract FactoryTracker {
         address[] memory _factories,
         address[] memory _quoteTokens
     ) public view returns (TokenWithLpsData memory) {
+        TokenWithLpsData memory newTokenData;
         IERC20 newToken = IERC20(_tokenAddress);
-        uint256 totalSupply = newToken.totalSupply();
-        uint256 balance = newToken.balanceOf(_account);
-        string memory name = newToken.name();
-        string memory symbol = newToken.symbol();
-        PairData[] memory lpQuote0;
-        PairData[] memory lpQuote1;
-        PairData[] memory lpQuote2;
-        PairData[] memory lpQuote3;
-        // for (uint256 index = 0; index < _factories.length; index++) {
-        //     address uniFactoryAddress = _factories[index];
-        //     IUniswapV2Factory iUniFactory = IUniswapV2Factory(
-        //         uniFactoryAddress
-        //     );
-
-        //     for (uint256 index2 = 0; index2 < _quoteTokens.length; index2++) {
-        //         address _lp = iUniFactory.getPair(
-        //             _tokenAddress,
-        //             _quoteTokens[index2]
-        //         );
-        //         if (index2 == 0) {
-        //             lpQuote1[index2] = _lp;
-        //         }
-        //         // address _lp1 = iUniFactory.getPair(
-        //         //     _tokenAddress,
-        //         //     _quoteTokens[1]
-        //         // );
-        //         // lpQuote1[0] = _lp1;
-        //         // address _lp2 = iUniFactory.getPair(
-        //         //     _tokenAddress,
-        //         //     _quoteTokens[2]
-        //         // );
-        //         // lpQuote2[0] = _lp2;
-        //         // address _lp3 = iUniFactory.getPair(
-        //         //     _tokenAddress,
-        //         //     _quoteTokens[3]
-        //         // );
-        //         // lpQuote3[0] = _lp3;
-        //     }
-        // }
-
-        for (uint256 index = 0; index < _quoteTokens.length; index++) {
+        newTokenData.totalSupply = newToken.totalSupply();
+        newTokenData.balance = newToken.balanceOf(_account);
+        newTokenData.name = newToken.name();
+        newTokenData.symbol = newToken.symbol();
+        newTokenData._tokenAddress = _tokenAddress;
+        // address[] memory factoriesAddresses = _factories;
+        // address[] memory quoteTokenAddresses = _quoteTokens;
+        for (uint256 index = 0; index < _factories.length; index++) {
             for (uint256 index2 = 0; index2 < _factories.length; index2++) {
                 address uniFactoryAddress = _factories[index];
                 IUniswapV2Factory iUniFactory = IUniswapV2Factory(
                     uniFactoryAddress
                 );
                 address _lp = iUniFactory.getPair(
-                    _tokenAddress,
+                    newTokenData._tokenAddress,
                     _quoteTokens[index]
                 );
                 PairData memory newPairData = getPair(_lp);
+
                 if (index == 0) {
-                    lpQuote0[index2] = newPairData;
+                    newTokenData._lp0Data[index2] = newPairData;
                 }
                 if (index == 1) {
-                    lpQuote1[index2] = newPairData;
+                    newTokenData._lp1Data[index2] = newPairData;
                 }
                 if (index == 2) {
-                    lpQuote2[index2] = newPairData;
+                    newTokenData._lp2Data[index2] = newPairData;
                 }
                 if (index == 3) {
-                    lpQuote3[index2] = newPairData;
+                    newTokenData._lp3Data[index2] = newPairData;
                 }
             }
         }
-        TokenWithLpsData memory newTokenData = TokenWithLpsData(
-            _tokenAddress,
-            name,
-            symbol,
-            totalSupply,
-            balance,
-            lpQuote0,
-            lpQuote1,
-            lpQuote2,
-            lpQuote3
-        );
 
         return newTokenData;
     }
