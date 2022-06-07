@@ -4,3 +4,4 @@ hardhat
 /node_modules
 
 /hardhat
+testContract.js

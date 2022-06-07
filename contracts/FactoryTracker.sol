@@ -175,7 +175,6 @@ interface IUniswapV2Factory {
 }
 
 contract FactoryTracker {
-
     struct PairData {
         address token0;
         address token1;
@@ -238,7 +237,6 @@ contract FactoryTracker {
         newPairData.balance = 0;
         newPairData.reserve0 = reserve0;
         newPairData.reserve1 = reserve1;
-
 
         return newPairData;
     }
@@ -330,19 +328,21 @@ contract FactoryTracker {
                     newTokenData._tokenAddress,
                     _quoteTokens[index]
                 );
-                PairData memory newPairData = getPair(_lp);
+                if (_lp != address(0)) {
+                    PairData memory newPairData = getPair(_lp);
 
-                if (index == 0) {
-                    newTokenData._lp0Data[index2] = newPairData;
-                }
-                if (index == 1) {
-                    newTokenData._lp1Data[index2] = newPairData;
-                }
-                if (index == 2) {
-                    newTokenData._lp2Data[index2] = newPairData;
-                }
-                if (index == 3) {
-                    newTokenData._lp3Data[index2] = newPairData;
+                    if (index == 0) {
+                        newTokenData._lp0Data[index2] = newPairData;
+                    }
+                    if (index == 1) {
+                        newTokenData._lp1Data[index2] = newPairData;
+                    }
+                    if (index == 2) {
+                        newTokenData._lp2Data[index2] = newPairData;
+                    }
+                    if (index == 3) {
+                        newTokenData._lp3Data[index2] = newPairData;
+                    }
                 }
             }
         }
