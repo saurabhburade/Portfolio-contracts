@@ -196,7 +196,7 @@ contract FactoryTracker {
         uint256 totalSupply;
         uint256 balance;
     }
-    mapping(uint256 => PairData[]) lpsMap;
+    mapping(uint256 => PairData[]) public lpsMap;
 
     struct TokenWithLpsData {
         address _tokenAddress;
@@ -204,10 +204,14 @@ contract FactoryTracker {
         string symbol;
         uint256 totalSupply;
         uint256 balance;
-        PairData[] _lp0Data;
-        PairData[] _lp1Data;
-        PairData[] _lp2Data;
-        PairData[] _lp3Data;
+        // PairData[] _lp0Data;
+        // PairData[] _lp1Data;
+        // PairData[] _lp2Data;
+        // PairData[] _lp3Data;
+        // mapping(uint256 => PairData) _lp0Data;
+        // mapping(uint256 => PairData) _lp1Data;
+        // mapping(uint256 => PairData) _lp2Data;
+        // mapping(uint256 => PairData) _lp3Data;
     }
 
     function getPair(address _pairAddress)
@@ -303,50 +307,84 @@ contract FactoryTracker {
         return newTokenData;
     }
 
+
     function getTokenWithBalanceOfAndLps(
         address _tokenAddress,
         address _account,
         address[] memory _factories,
         address[] memory _quoteTokens
-    ) public view returns (TokenWithLpsData memory) {
-        TokenWithLpsData memory newTokenData;
-        IERC20 newToken = IERC20(_tokenAddress);
-        newTokenData.totalSupply = newToken.totalSupply();
-        newTokenData.balance = newToken.balanceOf(_account);
-        newTokenData.name = newToken.name();
-        newTokenData.symbol = newToken.symbol();
-        newTokenData._tokenAddress = _tokenAddress;
-        // address[] memory factoriesAddresses = _factories;
-        // address[] memory quoteTokenAddresses = _quoteTokens;
-        for (uint256 index = 0; index < _factories.length; index++) {
-            for (uint256 index2 = 0; index2 < _factories.length; index2++) {
-                address uniFactoryAddress = _factories[index];
-                IUniswapV2Factory iUniFactory = IUniswapV2Factory(
-                    uniFactoryAddress
-                );
-                address _lp = iUniFactory.getPair(
-                    newTokenData._tokenAddress,
-                    _quoteTokens[index]
-                );
-                if (_lp != address(0)) {
-                    PairData memory newPairData = getPair(_lp);
+    )
+        public
+        view
+        returns (
+            TokenData memory _tokenData,
+            PairData[] memory _pair0,
+            PairData[] memory _pair1,
+            PairData[] memory _pair2,
+            PairData[] memory _pair3
+        )
+    {
+        // address[]  _lp0Data;
+        PairData[] memory _lp0Data = new PairData[](_factories.length);
+        // TokenWithLpsData memory newTokenData;
+        TokenData memory newTokenData = getTokenWithBalanceOf(
+            _tokenAddress,
+            _account
+        );
+        // newTokenData.totalSupply = newToken.totalSupply();
+        // newTokenData.balance = newToken.balanceOf(_account);
+        // newTokenData.name = newToken.name();
+        // newTokenData.symbol = newToken.symbol();
+        // newTokenData._tokenAddress = _tokenAddress;
+        PairData[] memory _lp1Data = new PairData[](_factories.length);
+        PairData[] memory _lp2Data = new PairData[](_factories.length);
+        PairData[] memory _lp3Data = new PairData[](_factories.length);
 
+        address[] memory quoteTokenAddresses = _quoteTokens;
+        address[] memory factoriesAddresses = _factories;
+        address uniFactoryAddress;
+        IUniswapV2Factory iUniFactory;
+        address _lp;
+        PairData memory newPairData;
+        for (uint256 index = 0; index < quoteTokenAddresses.length; index++) {
+            for (
+                uint256 index2 = 0;
+                index2 < factoriesAddresses.length;
+                index2++
+            ) {
+                uniFactoryAddress = factoriesAddresses[index2];
+                iUniFactory = IUniswapV2Factory(uniFactoryAddress);
+                _lp = iUniFactory.getPair(
+                    newTokenData._tokenAddress,
+                    quoteTokenAddresses[index]
+                );
+                // newPairData = getPair(_lp);
+                // _lp0Data[index2] = newPairData;
+
+                // _lp0Data.push();
+                // lpsMap[index][index2]=newPairData;
+
+                //  if (index == 0) {
+                // _lp0Data[index2] = _lp;
+                // }
+                if (_lp != address(0)) {
+                    newPairData = getPair(_lp);
                     if (index == 0) {
-                        newTokenData._lp0Data[index2] = newPairData;
+                        _lp0Data[index2] = newPairData;
                     }
                     if (index == 1) {
-                        newTokenData._lp1Data[index2] = newPairData;
+                        _lp1Data[index2] = newPairData;
                     }
                     if (index == 2) {
-                        newTokenData._lp2Data[index2] = newPairData;
+                        _lp2Data[index2] = newPairData;
                     }
                     if (index == 3) {
-                        newTokenData._lp3Data[index2] = newPairData;
+                        _lp3Data[index2] = newPairData;
                     }
                 }
             }
         }
 
-        return newTokenData;
+        return (newTokenData, _lp0Data, _lp1Data, _lp2Data, _lp3Data);
     }
 }
