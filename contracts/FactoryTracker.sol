@@ -196,23 +196,6 @@ contract FactoryTracker {
         uint256 totalSupply;
         uint256 balance;
     }
-    mapping(uint256 => PairData[]) public lpsMap;
-
-    struct TokenWithLpsData {
-        address _tokenAddress;
-        string name;
-        string symbol;
-        uint256 totalSupply;
-        uint256 balance;
-        // PairData[] _lp0Data;
-        // PairData[] _lp1Data;
-        // PairData[] _lp2Data;
-        // PairData[] _lp3Data;
-        // mapping(uint256 => PairData) _lp0Data;
-        // mapping(uint256 => PairData) _lp1Data;
-        // mapping(uint256 => PairData) _lp2Data;
-        // mapping(uint256 => PairData) _lp3Data;
-    }
 
     function getPair(address _pairAddress)
         public
@@ -307,7 +290,6 @@ contract FactoryTracker {
         return newTokenData;
     }
 
-
     function getTokenWithBalanceOfAndLps(
         address _tokenAddress,
         address _account,
@@ -324,18 +306,12 @@ contract FactoryTracker {
             PairData[] memory _pair3
         )
     {
-        // address[]  _lp0Data;
-        PairData[] memory _lp0Data = new PairData[](_factories.length);
-        // TokenWithLpsData memory newTokenData;
         TokenData memory newTokenData = getTokenWithBalanceOf(
             _tokenAddress,
             _account
         );
-        // newTokenData.totalSupply = newToken.totalSupply();
-        // newTokenData.balance = newToken.balanceOf(_account);
-        // newTokenData.name = newToken.name();
-        // newTokenData.symbol = newToken.symbol();
-        // newTokenData._tokenAddress = _tokenAddress;
+        PairData[] memory _lp0Data = new PairData[](_factories.length);
+
         PairData[] memory _lp1Data = new PairData[](_factories.length);
         PairData[] memory _lp2Data = new PairData[](_factories.length);
         PairData[] memory _lp3Data = new PairData[](_factories.length);
@@ -345,7 +321,7 @@ contract FactoryTracker {
         address uniFactoryAddress;
         IUniswapV2Factory iUniFactory;
         address _lp;
-        PairData memory newPairData;
+        // PairData memory newPairData;
         for (uint256 index = 0; index < quoteTokenAddresses.length; index++) {
             for (
                 uint256 index2 = 0;
@@ -358,28 +334,20 @@ contract FactoryTracker {
                     newTokenData._tokenAddress,
                     quoteTokenAddresses[index]
                 );
-                // newPairData = getPair(_lp);
-                // _lp0Data[index2] = newPairData;
 
-                // _lp0Data.push();
-                // lpsMap[index][index2]=newPairData;
-
-                //  if (index == 0) {
-                // _lp0Data[index2] = _lp;
-                // }
                 if (_lp != address(0)) {
-                    newPairData = getPair(_lp);
+                    // newPairData = getPair(_lp);
                     if (index == 0) {
-                        _lp0Data[index2] = newPairData;
+                        _lp0Data[index2] = getPair(_lp);
                     }
                     if (index == 1) {
-                        _lp1Data[index2] = newPairData;
+                        _lp1Data[index2] = getPair(_lp);
                     }
                     if (index == 2) {
-                        _lp2Data[index2] = newPairData;
+                        _lp2Data[index2] = getPair(_lp);
                     }
                     if (index == 3) {
-                        _lp3Data[index2] = newPairData;
+                        _lp3Data[index2] = getPair(_lp);
                     }
                 }
             }
