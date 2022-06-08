@@ -195,6 +195,7 @@ contract FactoryTracker {
         string symbol;
         uint256 totalSupply;
         uint256 balance;
+        uint decimals;
     }
 
     function getPair(address _pairAddress)
@@ -269,6 +270,7 @@ contract FactoryTracker {
         newTokenData.balance = 0;
         newTokenData.name = newToken.name();
         newTokenData.symbol = newToken.symbol();
+        newTokenData.decimals = newToken.decimals();
         newTokenData._tokenAddress = _tokenAddress;
 
         return newTokenData;
@@ -286,6 +288,7 @@ contract FactoryTracker {
         newTokenData.name = newToken.name();
         newTokenData.symbol = newToken.symbol();
         newTokenData._tokenAddress = _tokenAddress;
+        newTokenData.decimals = newToken.decimals();
 
         return newTokenData;
     }
